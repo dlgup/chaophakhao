@@ -664,7 +664,7 @@ muted=!muted;master.gain.value=muted?0:0.9;updIcon();
 });
 setInterval(updIcon,700);
 
-var state='title',stateT=0,stageN=1,score=0,hi=0,lives=5,hp=3,bombsN=6,gunLv=1,diff=1;
+var god=0,state='title',stateT=0,stageN=1,score=0,hi=0,lives=5,hp=3,bombsN=6,gunLv=1,diff=1;
 var px=W/2,py=H*0.82,tx=px,ty=py,inv=0,respawn=0,fireT=0,bombCD=0,bombRegen=0,shotN=0,muz=0;
 var off=0,SCROLL=78,tStage=0,shake=0,flash=0,gT=1,aT=2,cT=8,bossOn=0,bossRef=null,bossDeathT=0,bossX=0,bossY=0,clearT=0,bannerT=0,bannerA='',bannerB='',hudA=1,hudB=1,propA=0;
 var shield=0,shieldT=0,heavyN=0,rocketT=0,rocketFire=0,ravenT=0,lockG=null,forceK=-1,wmSide=1,t_now=0;
@@ -733,9 +733,10 @@ else if(id==='ov'){T.rf=8;T.sp=8;T.x2=8;T.hm=8;sFan();}
 function nearestGr(){var best=null,bd=1e9,i;for(i=0;i<gr.length;i++){var g=gr[i];if(g.on&&g.y>16&&g.y<py-20){var d=Math.abs(g.x-px)*0.5+(py-g.y)*0.3;if(d<bd){bd=d;best=g;}}}return best;}
 function updPU(dt){
 var key,i,j;for(key in T){if(T[key]>0)T[key]-=dt;}
-if(state!=='title'&&performance.now()-lastIn>45000){hi=Math.max(hi,score);mOn=false;T={};setState('title');return;}
+if(state!=='title'&&performance.now()-lastIn>45000){hi=Math.max(hi,score);mOn=false;T={};god=0;setState('title');return;}
 if(state==='play'&&(K.l||K.r||K.u||K.d)){tx=clamp(tx+(K.r-K.l)*330*dt,18,W-18);ty=clamp(ty+(K.d-K.u)*330*dt,66,H-52);}
 if(state!=='play')return;
+if(god){var gk=['rf','sp','pi','x2','hm','sg','xr','ws','cb','np','tb','ib','mg','jm'];for(var gi=0;gi<gk.length;gi++)T[gk[gi]]=Math.max(T[gk[gi]]||0,6);T.star=Math.max(T.star||0,6);gunLv=3;hp=3;if(lives<5)lives=5;bombsN=9;if(shield<3){shield=3;}shieldT=12;heavyN=6;rocketT=10;var wn=0;for(gi=0;gi<2;gi++){if(wm[gi].on){wn++;wm[gi].life=Math.max(wm[gi].life,26);}}if(wn<2&&Math.random()<dt*1.5)spawnWing();}
 if(T.star>0)inv=Math.max(inv,0.25);
 pT-=dt;if(pT<=0){pT=rnd(16,22);if(!bossOn)dropPk(rnd(40,W-40),-14);}
 if(T.sgu>0){sguT-=dt;if(sguT<=0){sguT=0.2;var s=free(sgu);if(s){s.on=1;s.y=H+10;s.o=rnd(-16,16);s.f=rnd(0,1);s.x=roadX(rowOf(s.y))+s.o;}}}
@@ -826,6 +827,7 @@ wmSide=-wmSide;w.on=1;w.side=wmSide;w.x=wmSide>0?W+50:-50;w.y=H+50;w.st=0;w.life
 sRadio();
 }
 function hurt(){
+if(god)return;
 if(inv>0||respawn>0||state!=='play'||bossDeathT>0)return;
 if(shield>0){shield--;inv=0.5;sShield();var r=free(rings);if(r){r.on=1;r.x=px;r.y=py;r.t=0;r.mr=38;}if(shield<=0)shieldT=0;return;}
 hp--;inv=1.5;shake+=6;sHurt();hudB=1;boom(px,py,1,0);
@@ -1069,7 +1071,7 @@ hx.fillStyle='rgba(8,24,20,0.55)';hx.fillRect(0,31,W,26);
 hx.drawImage(T28.c,8,34,22,20);txt(hx,'x'+Math.max(0,lives),34,50,12,'left','#fff');
 for(i=0;i<3;i++)heart(hx,80+i*17,45,9,i<hp?'#ff5a5a':'rgba(255,255,255,0.22)');
 for(i=0;i<bombsN;i++)hx.drawImage(BMB.c,140+i*9,36,6,14);
-txt(hx,'GUN '+gunLv,W-8,50,12,'right','#ffe08a');}
+txt(hx,'GUN '+gunLv,W-8,50,12,'right','#ffe08a');if(god)txt(hx,'GOD MODE',W/2+40,50,12,'center','#7fe8ff');}
 function drawHudBot(){hbx.clearRect(0,0,W,36);hbx.fillStyle='rgba(8,24,20,0.55)';hbx.fillRect(0,4,W,32);
 var i;for(i=0;i<lives;i++){hbx.drawImage(T28.c,8+i*22,8,20,18.4);}
 for(i=0;i<3;i++)heart(hbx,118+i*17,20,9,i<hp?'#ff5a5a':'rgba(255,255,255,0.22)');
@@ -1319,7 +1321,8 @@ function showMenu(){
 var opts=['<option value="t">Title screen</option>'];
 for(var i=0;i<NST;i++){opts.push('<option value="'+(i+1)+'">Mission '+(i+1)+' · '+STG[SMAP[i]].n+'</option>');}
 opts.push('<option value="c">End credits</option>');
-pn.innerHTML='<div style="color:#ffe45e;font-size:4.6cqw">ADMIN · GO TO</div><select id="adms" style="width:100%;margin:3cqw 0;padding:2.6cqw;font:bold 3.8cqw system-ui,sans-serif;background:#1d1838;color:#f3e9ff;border:1px solid #c9a24a;border-radius:2cqw">'+opts.join('')+'</select><div style="display:grid;grid-template-columns:1fr 1fr;gap:2cqw"><button id="admg" style="'+BS+'">GO</button><button id="admx" style="'+BS+'">CLOSE</button></div>';
+pn.innerHTML='<div style="color:#ffe45e;font-size:4.6cqw">ADMIN · GO TO</div><select id="adms" style="width:100%;margin:3cqw 0;padding:2.6cqw;font:bold 3.8cqw system-ui,sans-serif;background:#1d1838;color:#f3e9ff;border:1px solid #c9a24a;border-radius:2cqw">'+opts.join('')+'</select><button id="admgod" style="'+BS+'width:100%;margin-bottom:2cqw"></button><div style="display:grid;grid-template-columns:1fr 1fr;gap:2cqw"><button id="admg" style="'+BS+'">GO</button><button id="admx" style="'+BS+'">CLOSE</button></div>';
+var gb=document.getElementById('admgod');function gl(){gb.textContent='GOD MODE: '+(god?'ON':'OFF');gb.style.color=god?'#7fe8ff':'#ffe45e';gb.style.borderColor=god?'#7fe8ff':'#c9a24a';}gl();gb.addEventListener('click',function(){god=god?0:1;hudA=1;hudB=1;gl();});
 document.getElementById('admx').addEventListener('click',close);
 document.getElementById('admg').addEventListener('click',function(){var v=document.getElementById('adms').value;close();jump(v);});}
 function jump(v){
