@@ -1254,9 +1254,10 @@ function renderTitle(t){
 ctx.setTransform(S,0,0,S,0,0);t_g=t;
 if(TBIMG.complete&&TBIMG.naturalWidth)ctx.drawImage(TBIMG,0,0,W,H);else{ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);}
 var g=ctx.createLinearGradient(0,H*0.8,0,H);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,0.65)');ctx.fillStyle=g;ctx.fillRect(0,H*0.8,W,H*0.2);
-txt(ctx,'1UP '+pad(score),8,16,11,'left','#7fe8ff');txt(ctx,'HI-SCORE '+pad(hi),W-8,16,11,'right','#ffe45e');ctx.globalAlpha=0.75;txt(ctx,BUILD,W-8,29,9,'right','#cfe0ff');ctx.globalAlpha=1;
+txt(ctx,'1UP '+pad(score),8,16,11,'left','#7fe8ff');txt(ctx,'HI-SCORE '+pad(hi),W-8,16,11,'right','#ffe45e');
 ctx.fillStyle='rgba(0,0,0,0.45)';ctx.fillRect(0,H*0.5-30,W,52);ctx.globalAlpha=0.7+0.3*Math.sin(t*4);txt(ctx,'TOUCH TO PLAY',W/2,H*0.5,30,'center','#ffe45e');ctx.globalAlpha=1;
 txt(ctx,'DRAG OR ARROWS / WASD TO FLY · SPACE TO BOMB',W/2,H*0.962,10,'center','#d8e8ff');
+ctx.globalAlpha=0.7;txt(ctx,BUILD,W-5,H-4,7,'right','#cfe0ff');ctx.globalAlpha=1;
 if(!(AC&&AC.state==='running'))txt(ctx,'SOUND OFF · TAP THE SPEAKER',W/2,H*0.99,10,'center','#ff9a7a');
 }
 var noteRaw='';
