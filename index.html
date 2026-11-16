@@ -1092,7 +1092,6 @@ hi=Math.max(hi,score);creditT=0;fw.length=0;fwT=0.2;crI=0;crT=0;
 crd=[
 {h:'MISSION COMPLETE',logo:1,planes:1,dur:6,L:[{t:'You finished all 7 missions!',s:20},{t:'FINAL SCORE '+pad(score),s:24,c:'#ffd9a0'}]},
 {h:'THE PILOTS',dur:8,L:[{t:'The pilots were Hmong and Lao men.'},{t:'They flew a plane called the T-28.'},{t:'People called them Chao Pha Khao.'},{t:'That means Lord White Buddha.',c:'#ffe45e'},{t:'They were very brave.'}]},
-{h:'MAJOR LEE LUE',dur:10,L:[{t:'Lee Lue was a Hmong pilot.'},{t:'He learned to fly in 1967.'},{t:'He flew many, many missions.'},{t:'Some books say about 1,000. Other books say more than 5,000.'},{t:'He died on July 12, 1969.',c:'#ffe45e'},{t:'We remember him.'}]},
 {h:'LONG TIENG',dur:8,L:[{t:'Long Tieng was a base in Laos.'},{t:'About 40,000 people lived there.'},{t:'The pilots flew from there.'},{t:'Their families waited for them.'},{t:'We remember them all.',c:'#ffe45e'}]},
 {h:'THANK YOU FOR FLYING',hc:'#ffb347',planes:1,dur:30,L:[{t:'A game made by',s:15,c:'#d8d2c4'},{t:'David Lee',s:24,c:'#ffe45e'},{t:'and Hmongstory Legacy',s:20,c:'#ffe45e'},{t:'for Yav Pem Suab Academy',s:17},{t:'© 2026 Hmongstory Legacy',s:14,c:'#d8d2c4'}]}
 ];
@@ -1301,8 +1300,8 @@ requestAnimationFrame(frame);
 /* ---- ADMIN: hidden-ish level select (code 0000) ---- */
 (function(){
 var CODE='0000',entry='',open=false;
-var ab=document.createElement('button');ab.id='admb';ab.setAttribute('aria-label','Admin');ab.textContent='⚙';
-ab.style.cssText='position:absolute;left:0;top:0;width:2.8%;aspect-ratio:1;padding:0;border-radius:50%;border:0;background:transparent;color:rgba(255,255,255,0.14);font-size:2.2cqw;line-height:1;display:flex;align-items:center;justify-content:center;z-index:5;';
+var ab=document.createElement('button');ab.id='admb';ab.setAttribute('aria-label','Admin');ab.textContent='';
+ab.style.cssText='position:absolute;left:0;top:0;width:9%;aspect-ratio:1;padding:0;border:0;background:transparent;color:transparent;outline:none;-webkit-tap-highlight-color:transparent;font-size:2.2cqw;line-height:1;display:flex;align-items:center;justify-content:center;z-index:5;';
 var pn=document.createElement('div');pn.style.cssText='position:absolute;left:8%;right:8%;top:12%;display:none;z-index:6;background:rgba(8,10,24,0.96);border:2px solid #c9a24a;border-radius:3cqw;padding:4cqw;color:#f3e9ff;font:bold 4cqw system-ui,sans-serif;text-align:center;box-shadow:0 0 0 100vmax rgba(0,0,0,0.45);';
 stage.appendChild(ab);stage.appendChild(pn);
 function stop(e){e.stopPropagation();}
@@ -1329,7 +1328,7 @@ startGame();
 if(v==='c'){startCredits();return;}
 var n=+v;if(n>1){stageN=n-1;nextStage();}}
 function close(){open=false;pn.style.display='none';pn.innerHTML='';lastIn=performance.now();}
-ab.addEventListener('click',function(){if(open){close();return;}open=true;pn.style.display='block';showPad();});
+var taps=[];ab.addEventListener('click',function(){if(open){close();return;}var t=performance.now();taps.push(t);taps=taps.filter(function(x){return t-x<3000;});if(taps.length<5)return;taps=[];open=true;pn.style.display='block';showPad();});
 })();
 })();
 </script>
